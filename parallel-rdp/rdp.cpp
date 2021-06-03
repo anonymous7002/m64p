@@ -14,7 +14,6 @@ using namespace std;
 
 namespace RDP
 {
-const struct retro_hw_render_interface_vulkan *vulkan;
 static int cmd_cur;
 static int cmd_ptr;
 static uint32_t cmd_data[0x00040000 >> 2];
@@ -124,10 +123,10 @@ void process_commands(GFX_INFO gfx_info)
 
 bool init(GFX_INFO gfx_info)
 {
-	if (!context || !vulkan)
+	if (!context)
 		return false;
 
-	unsigned mask = vulkan->get_sync_index_mask(vulkan->handle);
+	unsigned mask = 0; //TODO vulkan->get_sync_index_mask(vulkan->handle);
 	unsigned num_frames = 0;
 	unsigned num_sync_frames = 0;
 	for (unsigned i = 0; i < 32; i++)
@@ -145,9 +144,6 @@ bool init(GFX_INFO gfx_info)
 	device.reset(new Device);
 	device->set_context(*context);
 	device->init_frame_contexts(num_sync_frames);
-	device->set_queue_lock(
-			[]() { vulkan->lock_queue(vulkan->handle); },
-			[]() { vulkan->unlock_queue(vulkan->handle); });
 
 	uintptr_t aligned_rdram = reinterpret_cast<uintptr_t>(gfx_info.RDRAM);
 	uintptr_t offset = 0;
@@ -253,7 +249,7 @@ static void complete_frame_error()
 	data.data = tex_data;
 	auto image = device->create_image(info, &data);
 
-	unsigned index = vulkan->get_sync_index(vulkan->handle);
+	unsigned index = 0; //TODO vulkan->get_sync_index(vulkan->handle);
 	assert(index < retro_images.size());
 
 	retro_images[index].image_view = image->get_view().get_view();
@@ -273,7 +269,7 @@ static void complete_frame_error()
 	retro_images[index].create_info.components.b = VK_COMPONENT_SWIZZLE_B;
 	retro_images[index].create_info.components.a = VK_COMPONENT_SWIZZLE_A;
 
-	vulkan->set_image(vulkan->handle, &retro_images[index], 0, nullptr, VK_QUEUE_FAMILY_IGNORED);
+	//TODO vulkan->set_image(vulkan->handle, &retro_images[index], 0, nullptr, VK_QUEUE_FAMILY_IGNORED);
 	width = image->get_width();
 	height = image->get_height();
 	retro_image_handles[index] = image;
@@ -317,7 +313,7 @@ void complete_frame(GFX_INFO gfx_info)
 	opts.downscale_steps = downscaling_steps;
 	opts.crop_overscan_pixels = overscan;
 	auto image = frontend->scanout(opts);
-	unsigned index = vulkan->get_sync_index(vulkan->handle);
+	unsigned index = 0; //TODO vulkan->get_sync_index(vulkan->handle);
 
 	if (!image)
 	{
@@ -360,7 +356,7 @@ void complete_frame(GFX_INFO gfx_info)
 	retro_images[index].create_info.components.b = VK_COMPONENT_SWIZZLE_B;
 	retro_images[index].create_info.components.a = VK_COMPONENT_SWIZZLE_A;
 
-	vulkan->set_image(vulkan->handle, &retro_images[index], 0, nullptr, VK_QUEUE_FAMILY_IGNORED);
+	//TODO vulkan->set_image(vulkan->handle, &retro_images[index], 0, nullptr, VK_QUEUE_FAMILY_IGNORED);
 	width = image->get_width();
 	height = image->get_height();
 	retro_image_handles[index] = image;
@@ -384,7 +380,7 @@ static const char *device_extensions[] = {
 };
 
 bool parallel_create_device(VkInstance instance, VkPhysicalDevice gpu,
-                            VkSurfaceKHR surface, PFN_vkGetInstanceProcAddr get_instance_proc_addr)
+                            VkDevice device, VkQueue queue, uint32_t queue_family, PFN_vkGetInstanceProcAddr get_instance_proc_addr)
 {
 	if (!Vulkan::Context::init_loader(get_instance_proc_addr))
 		return false;
@@ -396,15 +392,14 @@ bool parallel_create_device(VkInstance instance, VkPhysicalDevice gpu,
 	::RDP::context->set_system_handles(handles);
 
     const VkPhysicalDeviceFeatures features = { 0 };
-	if (!::RDP::context->init_device_from_instance(
-				instance, gpu, surface, device_extensions, 1,
-				NULL, 0, &features, Vulkan::CONTEXT_CREATION_DISABLE_BINDLESS_BIT))
+	if (!::RDP::context->init_from_instance_and_device(instance, gpu, device, queue, queue_family))
 	{
 		::RDP::context.reset();
 		return false;
 	}
 
 	// Frontend owns the device.
+	::RDP::context->release_instance();
 	::RDP::context->release_device();
 	return true;
 }
