@@ -90,7 +90,7 @@ else
   cmake -DCMAKE_BUILD_TYPE=Release ..
 fi
 cmake --build .
-cp mupen64plus-rdp-parallel.* $install_dir
+cp mupen64plus-video-parallel.* $install_dir
 
 if [[ $UNAME == *"MINGW"* ]]; then
   cd $install_dir
