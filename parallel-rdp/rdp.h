@@ -11,7 +11,7 @@ void begin_frame();
 
 void process_commands(GFX_INFO gfx_info);
 
-void complete_frame();
+void complete_frame(GFX_INFO gfx_info);
 void deinit();
 }
 

@@ -53,7 +53,7 @@ void MainWindow::updatePlugins()
     if (!settings->contains("videoPlugin")) {
         Filter.replace(0,"mupen64plus-video*");
         current = PluginDir.entryList(Filter);
-        default_value = "mupen64plus-video-GLideN64";
+        default_value = "mupen64plus-video-parallel";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
             settings->setValue("videoPlugin", "dummy");
@@ -77,7 +77,7 @@ void MainWindow::updatePlugins()
     if (!settings->contains("rspPlugin")) {
         Filter.replace(0,"mupen64plus-rsp*");
         current = PluginDir.entryList(Filter);
-        default_value = "mupen64plus-rsp-hle";
+        default_value = "mupen64plus-rsp-parallel";
         default_value += OSAL_DLL_EXTENSION;
         if (current.isEmpty())
             settings->setValue("rspPlugin", "dummy");
@@ -430,8 +430,6 @@ MainWindow::MainWindow(QWidget *parent) :
     loadCoreLib();
     loadPlugins();
 
-    setupLLE();
-
     if (coreLib)
     {
         m64p_handle coreConfigHandle;
@@ -462,55 +460,6 @@ void MainWindow::updateApp()
     updateManager->get(QNetworkRequest(QUrl("https://api.github.com/repos/loganmc10/m64p/releases/latest")));
 #endif
 #endif
-}
-
-void MainWindow::setupLLE()
-{
-    if (!settings->contains("LLE"))
-    {
-        settings->setValue("LLE", 0);
-    }
-
-    ui->actionVideo_Settings->setEnabled(!settings->value("LLE").toInt());
-    ui->actionLLE_Graphics->setChecked(settings->value("LLE").toInt());
-
-    if (coreLib)
-    {
-        m64p_handle lionConfigHandle;
-        m64p_error res = (*ConfigOpenSection)("Video-Angrylion-Plus", &lionConfigHandle);
-        if (res == M64ERR_SUCCESS)
-        {
-            int vimode = (*ConfigGetParamInt)(lionConfigHandle, "ViMode");
-            ui->actionVI_Filter->setChecked(!vimode);
-        }
-    }
-    ui->actionVI_Filter->setEnabled(settings->value("LLE").toInt());
-
-    connect(ui->actionLLE_Graphics, &QAction::toggled,
-    [=]( bool checked ) {
-        settings->setValue("LLE", checked ? 1 : 0);
-        ui->actionVI_Filter->setEnabled(checked);
-        ui->actionVideo_Settings->setEnabled(!checked);
-        if (coreLib)
-        {
-            int response;
-            (*CoreDoCommand)(M64CMD_CORE_STATE_QUERY, M64CORE_EMU_STATE, &response);
-            if (response == M64EMU_STOPPED)
-                resetCore();
-        }
-    });
-
-    connect(ui->actionVI_Filter, &QAction::toggled,
-    [=]( bool checked ) {
-        m64p_handle lionConfigHandle;
-        m64p_error res = (*ConfigOpenSection)("Video-Angrylion-Plus", &lionConfigHandle);
-        if (res == M64ERR_SUCCESS)
-        {
-            int vimode = checked == true ? 0 : 1;
-            (*ConfigSetParameter)(lionConfigHandle, "ViMode", M64TYPE_INT, &vimode);
-        }
-    });
-
 }
 
 void MainWindow::setupDiscord()
@@ -772,14 +721,16 @@ void MainWindow::showMessage(QString message)
     msgBox->show();
 }
 
-void MainWindow::createOGLWindow(QSurfaceFormat* format)
+void MainWindow::createVulkanWindow()
 {
-    my_window = new OGLWindow();
+    my_window = new QVulkanWindow();
+    my_inst = new QVulkanInstance();
+    my_inst->create();
+    my_window->setVulkanInstance(my_inst);
     QWidget *container = QWidget::createWindowContainer(my_window, this);
     container->setFocusPolicy(Qt::StrongFocus);
 
     my_window->setCursor(Qt::BlankCursor);
-    my_window->setFormat(*format);
 
     setCentralWidget(container);
 
@@ -787,11 +738,11 @@ void MainWindow::createOGLWindow(QSurfaceFormat* format)
     this->installEventFilter(&keyPressFilter);
 }
 
-void MainWindow::deleteOGLWindow()
+void MainWindow::deleteVulkanWindow()
 {
     QWidget *container = new QWidget(this);
-    my_window->doneCurrent();
     setCentralWidget(container);
+    my_inst->destroy();
 }
 
 void MainWindow::stopGame()
@@ -1013,14 +964,6 @@ void MainWindow::on_actionView_Log_triggered()
     logViewer.show();
 }
 
-void MainWindow::on_actionVideo_Settings_triggered()
-{
-    typedef void (*Config_Func)();
-    Config_Func PluginConfig = (Config_Func) osal_dynlib_getproc(gfxPlugin, "PluginConfig");
-    if (PluginConfig)
-        PluginConfig();
-}
-
 void MainWindow::on_actionCreate_Room_triggered()
 {
     CreateRoom *createRoom = new CreateRoom(this);
@@ -1048,7 +991,7 @@ WorkerThread* MainWindow::getWorkerThread()
     return workerThread;
 }
 
-OGLWindow* MainWindow::getOGLWindow()
+QVulkanWindow* MainWindow::getVulkanWindow()
 {
     return my_window;
 }
@@ -1187,17 +1130,7 @@ void MainWindow::loadPlugins()
     QString pluginPath = settings->value("pluginDirPath").toString();
     pluginPath.replace("$APP_PATH$", QCoreApplication::applicationDirPath());
 
-    QString lle_path;
-    QString plugin_path;
-    if (settings->value("LLE").toInt())
-    {
-        lle_path = "mupen64plus-video-angrylion-plus";
-        lle_path += OSAL_DLL_EXTENSION;
-        plugin_path = QDir(pluginPath).filePath(lle_path);
-    }
-    else
-        plugin_path = QDir(pluginPath).filePath(settings->value("videoPlugin").toString());
-    res = osal_dynlib_open(&gfxPlugin, plugin_path.toUtf8().constData());
+    res = osal_dynlib_open(&gfxPlugin, QDir(pluginPath).filePath(settings->value("videoPlugin").toString()).toUtf8().constData());
     if (res != M64ERR_SUCCESS)
     {
         msgBox.setText("Failed to load video plugin");
@@ -1206,6 +1139,7 @@ void MainWindow::loadPlugins()
     }
     PluginStartup = (ptr_PluginStartup) osal_dynlib_getproc(gfxPlugin, "PluginStartup");
     (*PluginStartup)(coreLib, (char*)"Video", DebugCallback);
+
     res = osal_dynlib_open(&audioPlugin, QDir(pluginPath).filePath(settings->value("audioPlugin").toString()).toUtf8().constData());
     if (res != M64ERR_SUCCESS)
     {
@@ -1215,6 +1149,7 @@ void MainWindow::loadPlugins()
     }
     PluginStartup = (ptr_PluginStartup) osal_dynlib_getproc(audioPlugin, "PluginStartup");
     (*PluginStartup)(coreLib, (char*)"Audio", DebugCallback);
+
     res = osal_dynlib_open(&inputPlugin, QDir(pluginPath).filePath(settings->value("inputPlugin").toString()).toUtf8().constData());
     if (res != M64ERR_SUCCESS)
     {
@@ -1228,15 +1163,7 @@ void MainWindow::loadPlugins()
     else
         (*PluginStartup)(coreLib, (char*)"Input", DebugCallback);
 
-    if (settings->value("LLE").toInt())
-    {
-        lle_path = "mupen64plus-rsp-parallel";
-        lle_path += OSAL_DLL_EXTENSION;
-        plugin_path = QDir(pluginPath).filePath(lle_path);
-    }
-    else
-        plugin_path = QDir(pluginPath).filePath(settings->value("rspPlugin").toString());
-    res = osal_dynlib_open(&rspPlugin, plugin_path.toUtf8().constData());
+    res = osal_dynlib_open(&rspPlugin, QDir(pluginPath).filePath(settings->value("rspPlugin").toString()).toUtf8().constData());
     if (res != M64ERR_SUCCESS)
     {
         msgBox.setText("Failed to load rsp plugin");

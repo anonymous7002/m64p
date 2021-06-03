@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include "discord/discord_game_sdk.h"
-#include "oglwindow.h"
 #include "workerthread.h"
 #include "logviewer.h"
 #include "keypressfilter.h"
@@ -10,6 +9,7 @@ extern "C" {
 #include "osal/osal_dynamiclib.h"
 }
 #include <QMainWindow>
+#include <QVulkanWindow>
 #include <QSettings>
 #include <QSurfaceFormat>
 #include <QWidgetAction>
@@ -33,7 +33,7 @@ class MainWindow : public QMainWindow
 
 public:
     WorkerThread* getWorkerThread();
-    OGLWindow* getOGLWindow();
+    QVulkanWindow* getVulkanWindow();
     QSettings* getSettings();
     LogViewer* getLogViewer();
 
@@ -68,8 +68,8 @@ protected:
 public slots:
     void resizeMainWindow(int Width, int Height);
     void toggleFS(int force);
-    void createOGLWindow(QSurfaceFormat* format);
-    void deleteOGLWindow();
+    void createVulkanWindow();
+    void deleteVulkanWindow();
     void showMessage(QString message);
     void updateDiscordActivity(struct DiscordActivity activity);
     void clearDiscordActivity();
@@ -119,8 +119,6 @@ private slots:
 
     void on_actionView_Log_triggered();
 
-    void on_actionVideo_Settings_triggered();
-
     void on_actionCreate_Room_triggered();
 
     void on_actionJoin_Room_triggered();
@@ -130,7 +128,6 @@ private slots:
     void on_actionOpen_Discord_Channel_triggered();
 
 private:
-    void setupLLE();
     void setupDiscord();
     void stopGame();
     void updateOpenRecent();
@@ -148,7 +145,8 @@ private:
     int gles;
     QString m_title;
 
-    OGLWindow *my_window = nullptr;
+    QVulkanWindow *my_window = nullptr;
+    QVulkanInstance *my_inst = nullptr;
     QThread *rendering_thread = nullptr;
     WorkerThread *workerThread = nullptr;
     LogViewer logViewer;

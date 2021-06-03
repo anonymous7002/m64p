@@ -28,8 +28,8 @@ public:
 signals:
     void resizeMainWindow(int Width, int Height);
     void toggleFS(int force);
-    void createOGLWindow(QSurfaceFormat* format);
-    void deleteOGLWindow();
+    void createVulkanWindow();
+    void deleteVulkanWindow();
     void showMessage(QString message);
     void updateDiscordActivity(struct DiscordActivity activity);
     void clearDiscordActivity();

@@ -34,11 +34,6 @@ m64p_error qtVidExtFuncQuit(void)
 {
     init = 0;
     w->getWorkerThread()->toggleFS(M64VIDEO_WINDOWED);
-    w->getOGLWindow()->doneCurrent();
-#ifndef SINGLE_THREAD
-    w->getOGLWindow()->context()->moveToThread(QApplication::instance()->thread());
-#endif
-    w->getWorkerThread()->deleteOGLWindow();
     return M64ERR_SUCCESS;
 }
 
@@ -60,15 +55,13 @@ m64p_error qtVidExtFuncListRates(m64p_2d_size, int*, int*)
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
 {
     if (!init) {
-        w->getWorkerThread()->createOGLWindow(&format);
+        w->getWorkerThread()->createVulkanWindow();
 #ifdef SINGLE_THREAD
         QCoreApplication::processEvents();
 #else
-        while (!w->getOGLWindow()->isValid()) {}
-        while (w->getOGLWindow()->context()->thread() != w->getRenderingThread()) {}
+        while (!w->getVulkanWindow()->isValid()) {}
 #endif
         w->getWorkerThread()->resizeMainWindow(Width, Height);
-        w->getOGLWindow()->makeCurrent();
         init = 1;
         needs_toggle = ScreenMode;
     }
@@ -83,7 +76,7 @@ m64p_error qtVidExtFuncSetModeWithRate(int, int, int, int, int, int)
 m64p_function qtVidExtFuncGLGetProc(const char* Proc)
 {
     if (!init) return NULL;
-    return w->getOGLWindow()->context()->getProcAddress(Proc);
+    return NULL;
 }
 
 m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
@@ -147,61 +140,6 @@ m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
 
 m64p_error qtVidExtFuncGLGetAttr(m64p_GLattr Attr, int *pValue)
 {
-    if (!init) return M64ERR_NOT_INIT;
-    QSurfaceFormat::SwapBehavior SB = w->getOGLWindow()->format().swapBehavior();
-    switch (Attr) {
-    case M64P_GL_DOUBLEBUFFER:
-        if (SB == QSurfaceFormat::SingleBuffer)
-            *pValue = 0;
-        else
-            *pValue = 1;
-        break;
-    case M64P_GL_BUFFER_SIZE:
-        *pValue = w->getOGLWindow()->format().alphaBufferSize() + w->getOGLWindow()->format().redBufferSize() + w->getOGLWindow()->format().greenBufferSize() + w->getOGLWindow()->format().blueBufferSize();
-        break;
-    case M64P_GL_DEPTH_SIZE:
-        *pValue = w->getOGLWindow()->format().depthBufferSize();
-        break;
-    case M64P_GL_RED_SIZE:
-        *pValue = w->getOGLWindow()->format().redBufferSize();
-        break;
-    case M64P_GL_GREEN_SIZE:
-        *pValue = w->getOGLWindow()->format().greenBufferSize();
-        break;
-    case M64P_GL_BLUE_SIZE:
-        *pValue = w->getOGLWindow()->format().blueBufferSize();
-        break;
-    case M64P_GL_ALPHA_SIZE:
-        *pValue = w->getOGLWindow()->format().alphaBufferSize();
-        break;
-    case M64P_GL_SWAP_CONTROL:
-        *pValue = w->getOGLWindow()->format().swapInterval();
-        break;
-    case M64P_GL_MULTISAMPLEBUFFERS:
-        break;
-    case M64P_GL_MULTISAMPLESAMPLES:
-        *pValue = w->getOGLWindow()->format().samples();
-        break;
-    case M64P_GL_CONTEXT_MAJOR_VERSION:
-        *pValue = w->getOGLWindow()->format().majorVersion();
-        break;
-    case M64P_GL_CONTEXT_MINOR_VERSION:
-        *pValue = w->getOGLWindow()->format().minorVersion();
-        break;
-    case M64P_GL_CONTEXT_PROFILE_MASK:
-        switch (w->getOGLWindow()->format().profile()) {
-        case QSurfaceFormat::CoreProfile:
-            *pValue = M64P_GL_CONTEXT_PROFILE_CORE;
-            break;
-        case QSurfaceFormat::CompatibilityProfile:
-            *pValue = M64P_GL_CONTEXT_PROFILE_COMPATIBILITY;
-            break;
-        case QSurfaceFormat::NoProfile:
-            *pValue = M64P_GL_CONTEXT_PROFILE_COMPATIBILITY;
-            break;
-        }
-        break;
-    }
     return M64ERR_SUCCESS;
 }
 
@@ -225,11 +163,6 @@ m64p_error qtVidExtFuncGLSwapBuf(void)
             w->getWorkerThread()->toggleFS(needs_toggle);
             needs_toggle = 0;
         }
-    }
-
-    if (QThread::currentThread() == w->getRenderingThread()) {
-        w->getOGLWindow()->context()->swapBuffers(w->getOGLWindow());
-        w->getOGLWindow()->context()->makeCurrent(w->getOGLWindow());
     }
 
 #ifdef SINGLE_THREAD

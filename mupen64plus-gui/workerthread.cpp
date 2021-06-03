@@ -35,8 +35,8 @@ void WorkerThread::run()
 {
     connect(this, SIGNAL(resizeMainWindow(int,int)), w, SLOT(resizeMainWindow(int, int)), CONNECTION_TYPE);
     connect(this, SIGNAL(toggleFS(int)), w, SLOT(toggleFS(int)), CONNECTION_TYPE);
-    connect(this, SIGNAL(createOGLWindow(QSurfaceFormat*)), w, SLOT(createOGLWindow(QSurfaceFormat*)), CONNECTION_TYPE);
-    connect(this, SIGNAL(deleteOGLWindow()), w, SLOT(deleteOGLWindow()), CONNECTION_TYPE);
+    connect(this, SIGNAL(createVulkanWindow()), w, SLOT(createVulkanWindow()), CONNECTION_TYPE);
+    connect(this, SIGNAL(deleteVulkanWindow()), w, SLOT(deleteVulkanWindow()), CONNECTION_TYPE);
     connect(this, SIGNAL(showMessage(QString)), w, SLOT(showMessage(QString)), CONNECTION_TYPE);
     connect(this, SIGNAL(updateDiscordActivity(struct DiscordActivity)), w, SLOT(updateDiscordActivity(struct DiscordActivity)), CONNECTION_TYPE);
     connect(this, SIGNAL(clearDiscordActivity()), w, SLOT(clearDiscordActivity()), CONNECTION_TYPE);

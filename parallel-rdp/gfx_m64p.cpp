@@ -138,12 +138,12 @@ EXPORT void CALL RomClosed (void)
 
 EXPORT void CALL ShowCFB (void)
 {
-    RDP::complete_frame();
+    RDP::complete_frame(gfx_info);
 }
 
 EXPORT void CALL UpdateScreen (void)
 {
-    RDP::complete_frame();
+    RDP::complete_frame(gfx_info);
 }
 
 EXPORT void CALL ViStatusChanged (void)

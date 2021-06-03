@@ -5,8 +5,6 @@
 
 #ifdef __cplusplus
 
-#include "oglwindow.h"
-
 extern "C" {
 #endif
 m64p_error qtVidExtFuncInit(void);

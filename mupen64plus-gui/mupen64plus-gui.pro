@@ -33,7 +33,6 @@ SOURCES += main.cpp \
     settingsdialog.cpp \
     interface/common.cpp \
     plugindialog.cpp \
-    oglwindow.cpp \
     workerthread.cpp \
     settingclasses.cpp \
     interface/core_commands.cpp \
@@ -81,7 +80,6 @@ HEADERS  += mainwindow.h \
     settingsdialog.h \
     workerthread.h \
     plugindialog.h \
-    oglwindow.h \
     settingclasses.h \
     osal/osal_dynamiclib.h \
     interface/sdl_key_converter.h \
