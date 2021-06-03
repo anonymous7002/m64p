@@ -128,6 +128,7 @@ EXPORT void CALL ProcessRDPList(void)
 
 EXPORT int CALL RomOpen (void)
 {
+    //RDP::vulkan = vulkan;
     return RDP::init(gfx_info);
 }
 

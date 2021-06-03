@@ -1,9 +1,8 @@
-#include "rdp.h"
 #include "vulkan_headers.hpp"
 #include "rdp_device.hpp"
 #include "context.hpp"
 #include "device.hpp"
-#include "libretro_vulkan.h"
+#include "rdp.h"
 #include <stdint.h>
 #include <memory>
 
