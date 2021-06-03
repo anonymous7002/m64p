@@ -118,10 +118,8 @@ EXPORT int CALL InitiateGFX (GFX_INFO Gfx_Info)
     VkQueue queue;
     PFN_vkGetInstanceProcAddr get_instance_proc_addr;
     CoreVkVideo_Init(&instance, &device, &gpu, &queue, &get_instance_proc_addr);
-    parallel_create_device(instance, gpu, device, queue, 0, get_instance_proc_addr);
     gfx_info = Gfx_Info;
-
-    return 1;
+    return parallel_create_device(instance, gpu, device, queue, 0, get_instance_proc_addr);
 }
 
 EXPORT void CALL MoveScreen (int xpos, int ypos)
