@@ -23,4 +23,7 @@ void complete_frame(GFX_INFO gfx_info);
 void deinit();
 }
 
+bool parallel_create_device(VkInstance instance, VkPhysicalDevice gpu,
+                            VkDevice device, VkQueue queue, uint32_t queue_family, PFN_vkGetInstanceProcAddr get_instance_proc_addr);
+
 #endif

@@ -43,7 +43,7 @@
 #endif
 
 /* local variables */
-static m64p_video_extension_functions l_ExternalVideoFuncTable = {14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+static m64p_video_extension_functions l_ExternalVideoFuncTable = {15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 static int l_VideoExtensionActive = 0;
 static int l_VideoOutputActive = 0;
 static int l_Fullscreen = 0;
@@ -56,7 +56,7 @@ m64p_error OverrideVideoFunctions(m64p_video_extension_functions *VideoFunctionS
     /* check input data */
     if (VideoFunctionStruct == NULL)
         return M64ERR_INPUT_ASSERT;
-    if (VideoFunctionStruct->Functions < 14)
+    if (VideoFunctionStruct->Functions < 15)
         return M64ERR_INPUT_INVALID;
 
     /* disable video extension if any of the function pointers are NULL */
@@ -73,10 +73,11 @@ m64p_error OverrideVideoFunctions(m64p_video_extension_functions *VideoFunctionS
         VideoFunctionStruct->VidExtFuncSetCaption == NULL ||
         VideoFunctionStruct->VidExtFuncToggleFS == NULL ||
         VideoFunctionStruct->VidExtFuncResizeWindow == NULL ||
-        VideoFunctionStruct->VidExtFuncGLGetDefaultFramebuffer == NULL)
+        VideoFunctionStruct->VidExtFuncGLGetDefaultFramebuffer == NULL ||
+        VideoFunctionStruct->VidExtFuncVkInit == NULL)
     {
-        l_ExternalVideoFuncTable.Functions = 14;
-        memset(&l_ExternalVideoFuncTable.VidExtFuncInit, 0, 14 * sizeof(void *));
+        l_ExternalVideoFuncTable.Functions = 15;
+        memset(&l_ExternalVideoFuncTable.VidExtFuncInit, 0, 15 * sizeof(void *));
         l_VideoExtensionActive = 0;
         return M64ERR_SUCCESS;
     }
@@ -95,6 +96,14 @@ int VidExt_InFullscreenMode(void)
 int VidExt_VideoRunning(void)
 {
     return l_VideoOutputActive;
+}
+
+EXPORT m64p_error CALL VidVkExt_Init(VkInstance* instance, VkDevice* device, VkPhysicalDevice* gpu, VkQueue* queue, PFN_vkGetInstanceProcAddr* func)
+{
+    /* call video extension override if necessary */
+    if (l_VideoExtensionActive)
+        return (*l_ExternalVideoFuncTable.VidExtFuncVkInit)(instance, device, gpu, queue, func);
+    return M64ERR_SUCCESS;
 }
 
 /* video extension functions to be called by the video plugin */

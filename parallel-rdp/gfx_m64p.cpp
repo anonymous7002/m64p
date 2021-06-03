@@ -30,6 +30,7 @@
 #include "gfx_m64p.h"
 #include "rdp.h"
 
+#include "m64p_vidext.h"
 #include "m64p_types.h"
 #include "m64p_config.h"
 
@@ -40,6 +41,7 @@ static ptr_ConfigSetDefaultBool   ConfigSetDefaultBool = NULL;
 static ptr_ConfigGetParamInt      ConfigGetParamInt = NULL;
 static ptr_ConfigGetParamBool     ConfigGetParamBool = NULL;
 static ptr_PluginGetVersion       CoreGetVersion = NULL;
+static ptr_VidVkExt_Init           CoreVkVideo_Init = NULL;
 
 void (*debug_callback)(void *, int, const char *);
 void *debug_call_context;
@@ -67,6 +69,8 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle _CoreLibHandle, void *Co
     ConfigSetDefaultBool = (ptr_ConfigSetDefaultBool)DLSYM(CoreLibHandle, "ConfigSetDefaultBool");
     ConfigGetParamInt = (ptr_ConfigGetParamInt)DLSYM(CoreLibHandle, "ConfigGetParamInt");
     ConfigGetParamBool = (ptr_ConfigGetParamBool)DLSYM(CoreLibHandle, "ConfigGetParamBool");
+
+    CoreVkVideo_Init = (ptr_VidVkExt_Init) DLSYM(CoreLibHandle, "VidVkExt_Init");
 
     return M64ERR_SUCCESS;
 }
@@ -108,6 +112,13 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *PluginType, int *Plugi
 
 EXPORT int CALL InitiateGFX (GFX_INFO Gfx_Info)
 {
+    VkInstance instance;
+    VkDevice device;
+    VkPhysicalDevice gpu;
+    VkQueue queue;
+    PFN_vkGetInstanceProcAddr get_instance_proc_addr;
+    CoreVkVideo_Init(&instance, &device, &gpu, &queue, &get_instance_proc_addr);
+    parallel_create_device(instance, gpu, device, queue, 0, get_instance_proc_addr);
     gfx_info = Gfx_Info;
 
     return 1;
