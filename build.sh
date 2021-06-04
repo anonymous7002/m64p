@@ -87,7 +87,7 @@ cd $base_dir/parallel-rdp/build
 if [[ $UNAME == *"MINGW"* ]]; then
   cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 else
-  cmake -DCMAKE_BUILD_TYPE=Release ..
+  cmake -DCMAKE_BUILD_TYPE=Debug ..
 fi
 cmake --build .
 cp mupen64plus-video-parallel.* $install_dir

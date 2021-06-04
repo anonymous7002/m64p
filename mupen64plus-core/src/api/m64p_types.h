@@ -427,7 +427,7 @@ typedef struct {
   m64p_error    (*VidExtFuncToggleFS)(void);
   m64p_error    (*VidExtFuncResizeWindow)(int, int);
   uint32_t      (*VidExtFuncGLGetDefaultFramebuffer)(void);
-  m64p_error    (*VidExtFuncVkInit)(VkInstance*, VkDevice*, VkPhysicalDevice*, VkQueue*, PFN_vkGetInstanceProcAddr*);
+  m64p_error    (*VidExtFuncVkInit)(VkInstance*, VkSurfaceKHR*, VkPhysicalDevice*, PFN_vkGetInstanceProcAddr*);
 } m64p_video_extension_functions;
 
 #endif /* define M64P_TYPES_H */

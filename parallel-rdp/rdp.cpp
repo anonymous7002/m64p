@@ -380,7 +380,7 @@ static const char *device_extensions[] = {
 };
 
 bool parallel_create_device(VkInstance instance, VkPhysicalDevice gpu,
-                            VkDevice device, VkQueue queue, uint32_t queue_family, PFN_vkGetInstanceProcAddr get_instance_proc_addr)
+                            VkSurfaceKHR surface, PFN_vkGetInstanceProcAddr get_instance_proc_addr)
 {
 	if (!Vulkan::Context::init_loader(get_instance_proc_addr))
 		return false;
@@ -391,8 +391,13 @@ bool parallel_create_device(VkInstance instance, VkPhysicalDevice gpu,
 
 	::RDP::context->set_system_handles(handles);
 
-    const VkPhysicalDeviceFeatures features = { 0 };
-	if (!::RDP::context->init_from_instance_and_device(instance, gpu, device, queue, queue_family))
+	static const char *device_extensions[] = {
+		"VK_KHR_swapchain",
+	};
+	const VkPhysicalDeviceFeatures features = { 0 };
+	if (!::RDP::context->init_device_from_instance(
+				instance, gpu, surface, device_extensions, 1,
+				NULL, 0, &features, Vulkan::CONTEXT_CREATION_DISABLE_BINDLESS_BIT))
 	{
 		::RDP::context.reset();
 		return false;

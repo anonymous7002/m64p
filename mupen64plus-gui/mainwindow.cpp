@@ -728,16 +728,6 @@ void MainWindow::createVulkanWindow()
     my_inst = new QVulkanInstance();
     my_inst->create();
     my_window->setVulkanInstance(my_inst);
-    QByteArrayList set_extensions;
-    QVulkanInfoVector<QVulkanExtension> extensions = my_window->supportedDeviceExtensions();
-    for (int i = 0; i < extensions.size(); ++i)
-    {
-        if (QString::fromUtf8(extensions.at(i).name) == "VK_KHR_8bit_storage" ||
-            QString::fromUtf8(extensions.at(i).name) == "VK_KHR_16bit_storage" ||
-            QString::fromUtf8(extensions.at(i).name) == "VK_EXT_external_memory_host")
-            set_extensions.append(extensions.at(i).name);
-    }
-    my_window->setDeviceExtensions(set_extensions);
     QWidget *container = QWidget::createWindowContainer(my_window, this);
     container->setFocusPolicy(Qt::StrongFocus);
 

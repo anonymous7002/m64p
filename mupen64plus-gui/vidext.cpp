@@ -17,14 +17,13 @@ PFN_vkVoidFunction qtvkGetInstanceProcAddr(VkInstance instance, const char* pNam
     return w->getVulkanWindow()->vulkanInstance()->getInstanceProcAddr(pName);
 }
 
-m64p_error qtVidExtFuncVkInit(VkInstance* instance, VkDevice* device, VkPhysicalDevice* gpu, VkQueue* queue, PFN_vkGetInstanceProcAddr* func)
+m64p_error qtVidExtFuncVkInit(VkInstance* instance, VkSurfaceKHR* surface, VkPhysicalDevice* gpu, PFN_vkGetInstanceProcAddr* func)
 {
     w->getWorkerThread()->createVulkanWindow();
     while (!w->getVulkanWindow()->isValid()) {}
     *instance = w->getVulkanWindow()->vulkanInstance()->vkInstance();
-    *device = w->getVulkanWindow()->device();
+    *surface = QVulkanInstance::surfaceForWindow(w->getVulkanWindow());
     *gpu = w->getVulkanWindow()->physicalDevice();
-    *queue = w->getVulkanWindow()->graphicsQueue();
     *func = qtvkGetInstanceProcAddr;
     return M64ERR_SUCCESS;
 }

@@ -113,13 +113,12 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *PluginType, int *Plugi
 EXPORT int CALL InitiateGFX (GFX_INFO Gfx_Info)
 {
     VkInstance instance;
-    VkDevice device;
+    VkSurfaceKHR surface;
     VkPhysicalDevice gpu;
-    VkQueue queue;
     PFN_vkGetInstanceProcAddr get_instance_proc_addr;
-    CoreVkVideo_Init(&instance, &device, &gpu, &queue, &get_instance_proc_addr);
+    CoreVkVideo_Init(&instance, &surface, &gpu, &get_instance_proc_addr);
     gfx_info = Gfx_Info;
-    return parallel_create_device(instance, gpu, device, queue, 0, get_instance_proc_addr);
+    return parallel_create_device(instance, gpu, surface, get_instance_proc_addr);
 }
 
 EXPORT void CALL MoveScreen (int xpos, int ypos)

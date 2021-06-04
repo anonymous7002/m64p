@@ -32,9 +32,9 @@
 extern "C" {
 #endif
 
-typedef m64p_error (*ptr_VidVkExt_Init)(VkInstance*, VkDevice*, VkPhysicalDevice*, VkQueue*, PFN_vkGetInstanceProcAddr*);
+typedef m64p_error (*ptr_VidVkExt_Init)(VkInstance*, VkSurfaceKHR*, VkPhysicalDevice*, PFN_vkGetInstanceProcAddr*);
 #if defined(M64P_CORE_PROTOTYPES)
-EXPORT m64p_error CALL VidVkExt_Init(VkInstance*, VkDevice*, VkPhysicalDevice*, VkQueue*, PFN_vkGetInstanceProcAddr*);
+EXPORT m64p_error CALL VidVkExt_Init(VkInstance*, VkSurfaceKHR*, VkPhysicalDevice*, PFN_vkGetInstanceProcAddr*);
 #endif
 /* VidExt_Init()
  *

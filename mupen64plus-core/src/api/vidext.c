@@ -98,11 +98,11 @@ int VidExt_VideoRunning(void)
     return l_VideoOutputActive;
 }
 
-EXPORT m64p_error CALL VidVkExt_Init(VkInstance* instance, VkDevice* device, VkPhysicalDevice* gpu, VkQueue* queue, PFN_vkGetInstanceProcAddr* func)
+EXPORT m64p_error CALL VidVkExt_Init(VkInstance* instance, VkSurfaceKHR* surface, VkPhysicalDevice* gpu, PFN_vkGetInstanceProcAddr* func)
 {
     /* call video extension override if necessary */
     if (l_VideoExtensionActive)
-        return (*l_ExternalVideoFuncTable.VidExtFuncVkInit)(instance, device, gpu, queue, func);
+        return (*l_ExternalVideoFuncTable.VidExtFuncVkInit)(instance, surface, gpu, func);
     return M64ERR_SUCCESS;
 }
 
