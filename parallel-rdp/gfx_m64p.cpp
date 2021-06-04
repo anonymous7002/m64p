@@ -41,7 +41,9 @@ static ptr_ConfigSetDefaultBool   ConfigSetDefaultBool = NULL;
 static ptr_ConfigGetParamInt      ConfigGetParamInt = NULL;
 static ptr_ConfigGetParamBool     ConfigGetParamBool = NULL;
 static ptr_PluginGetVersion       CoreGetVersion = NULL;
-static ptr_VidVkExt_Init           CoreVkVideo_Init = NULL;
+static ptr_VidVkExt_Init          CoreVkVideo_Init = NULL;
+ptr_VidVkExtGetSyncIndex          CoreVkVideo_GetSyncIndex = NULL;
+ptr_VidVkExtGetSyncIndexMask      CoreVkVideo_GetSyncIndexMask = NULL;
 
 void (*debug_callback)(void *, int, const char *);
 void *debug_call_context;
@@ -71,6 +73,8 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle _CoreLibHandle, void *Co
     ConfigGetParamBool = (ptr_ConfigGetParamBool)DLSYM(CoreLibHandle, "ConfigGetParamBool");
 
     CoreVkVideo_Init = (ptr_VidVkExt_Init) DLSYM(CoreLibHandle, "VidVkExt_Init");
+    CoreVkVideo_GetSyncIndex = (ptr_VidVkExtGetSyncIndex) DLSYM(CoreLibHandle, "VidVkExtGetSyncIndex");
+    CoreVkVideo_GetSyncIndexMask = (ptr_VidVkExtGetSyncIndexMask) DLSYM(CoreLibHandle, "VidVkExtGetSyncIndexMask");
 
     return M64ERR_SUCCESS;
 }

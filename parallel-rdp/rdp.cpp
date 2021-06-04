@@ -126,7 +126,7 @@ bool init(GFX_INFO gfx_info)
 	if (!context)
 		return false;
 
-	unsigned mask = 0; //TODO vulkan->get_sync_index_mask(vulkan->handle);
+	unsigned mask = CoreVkVideo_GetSyncIndexMask();
 	unsigned num_frames = 0;
 	unsigned num_sync_frames = 0;
 	for (unsigned i = 0; i < 32; i++)
@@ -249,7 +249,7 @@ static void complete_frame_error()
 	data.data = tex_data;
 	auto image = device->create_image(info, &data);
 
-	unsigned index = 0; //TODO vulkan->get_sync_index(vulkan->handle);
+	unsigned index = CoreVkVideo_GetSyncIndex();
 	assert(index < retro_images.size());
 
 	retro_images[index].image_view = image->get_view().get_view();
@@ -313,7 +313,7 @@ void complete_frame(GFX_INFO gfx_info)
 	opts.downscale_steps = downscaling_steps;
 	opts.crop_overscan_pixels = overscan;
 	auto image = frontend->scanout(opts);
-	unsigned index = 0; //TODO vulkan->get_sync_index(vulkan->handle);
+	unsigned index = CoreVkVideo_GetSyncIndex();
 
 	if (!image)
 	{

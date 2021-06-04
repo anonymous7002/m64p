@@ -36,6 +36,16 @@ typedef m64p_error (*ptr_VidVkExt_Init)(VkInstance*, VkSurfaceKHR*, VkPhysicalDe
 #if defined(M64P_CORE_PROTOTYPES)
 EXPORT m64p_error CALL VidVkExt_Init(VkInstance*, VkSurfaceKHR*, VkPhysicalDevice*, PFN_vkGetInstanceProcAddr*);
 #endif
+
+typedef uint32_t (*ptr_VidVkExtGetSyncIndex)(void);
+#if defined(M64P_CORE_PROTOTYPES)
+EXPORT uint32_t CALL VidVkExtGetSyncIndex(void);
+#endif
+
+typedef uint32_t (*ptr_VidVkExtGetSyncIndexMask)(void);
+#if defined(M64P_CORE_PROTOTYPES)
+EXPORT uint32_t CALL VidVkExtGetSyncIndexMask(void);
+#endif
 /* VidExt_Init()
  *
  * This function should be called from within the InitiateGFX() video plugin

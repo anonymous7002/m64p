@@ -428,6 +428,8 @@ typedef struct {
   m64p_error    (*VidExtFuncResizeWindow)(int, int);
   uint32_t      (*VidExtFuncGLGetDefaultFramebuffer)(void);
   m64p_error    (*VidExtFuncVkInit)(VkInstance*, VkSurfaceKHR*, VkPhysicalDevice*, PFN_vkGetInstanceProcAddr*);
+  uint32_t      (*VidExtFuncVkGetSyncIndex)(void);
+  uint32_t      (*VidExtFuncVkGetSyncIndexMask)(void);
 } m64p_video_extension_functions;
 
 #endif /* define M64P_TYPES_H */

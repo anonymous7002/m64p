@@ -23,6 +23,8 @@ m64p_error qtVidExtFuncToggleFS(void);
 m64p_error qtVidExtFuncResizeWindow(int, int);
 uint32_t   qtVidExtFuncGLGetDefaultFramebuffer(void);
 m64p_error qtVidExtFuncVkInit(VkInstance* instance, VkSurfaceKHR* surface, VkPhysicalDevice* gpu, PFN_vkGetInstanceProcAddr* func);
+uint32_t   qtVidExtFuncVkGetSyncIndex(void);
+uint32_t   qtVidExtFuncVkGetSyncIndexMask(void);
 #ifdef __cplusplus
 }
 #endif

@@ -17,6 +17,16 @@ PFN_vkVoidFunction qtvkGetInstanceProcAddr(VkInstance instance, const char* pNam
     return w->getVulkanWindow()->vulkanInstance()->getInstanceProcAddr(pName);
 }
 
+uint32_t qtVidExtFuncVkGetSyncIndex()
+{
+    return w->getVulkanWindow()->currentSwapChainImageIndex();
+}
+
+uint32_t qtVidExtFuncVkGetSyncIndexMask()
+{
+    return (1 << w->getVulkanWindow()->swapChainImageCount()) - 1;
+}
+
 m64p_error qtVidExtFuncVkInit(VkInstance* instance, VkSurfaceKHR* surface, VkPhysicalDevice* gpu, PFN_vkGetInstanceProcAddr* func)
 {
     w->getWorkerThread()->createVulkanWindow();

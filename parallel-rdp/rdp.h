@@ -2,7 +2,11 @@
 #define PARALLEL_RDP_H
 
 #include "m64p_plugin.h"
+#include "m64p_vidext.h"
 #include <vulkan/vulkan.h>
+
+extern ptr_VidVkExtGetSyncIndex                      CoreVkVideo_GetSyncIndex;
+extern ptr_VidVkExtGetSyncIndexMask                  CoreVkVideo_GetSyncIndexMask;
 
 struct retro_vulkan_image
  {

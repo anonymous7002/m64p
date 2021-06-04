@@ -43,7 +43,7 @@
 #endif
 
 /* local variables */
-static m64p_video_extension_functions l_ExternalVideoFuncTable = {15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+static m64p_video_extension_functions l_ExternalVideoFuncTable = {17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 static int l_VideoExtensionActive = 0;
 static int l_VideoOutputActive = 0;
 static int l_Fullscreen = 0;
@@ -74,10 +74,12 @@ m64p_error OverrideVideoFunctions(m64p_video_extension_functions *VideoFunctionS
         VideoFunctionStruct->VidExtFuncToggleFS == NULL ||
         VideoFunctionStruct->VidExtFuncResizeWindow == NULL ||
         VideoFunctionStruct->VidExtFuncGLGetDefaultFramebuffer == NULL ||
-        VideoFunctionStruct->VidExtFuncVkInit == NULL)
+        VideoFunctionStruct->VidExtFuncVkInit == NULL ||
+        VideoFunctionStruct->VidExtFuncVkGetSyncIndex == NULL ||
+        VideoFunctionStruct->VidExtFuncVkGetSyncIndexMask == NULL)
     {
-        l_ExternalVideoFuncTable.Functions = 15;
-        memset(&l_ExternalVideoFuncTable.VidExtFuncInit, 0, 15 * sizeof(void *));
+        l_ExternalVideoFuncTable.Functions = 17;
+        memset(&l_ExternalVideoFuncTable.VidExtFuncInit, 0, 17 * sizeof(void *));
         l_VideoExtensionActive = 0;
         return M64ERR_SUCCESS;
     }
@@ -103,6 +105,22 @@ EXPORT m64p_error CALL VidVkExt_Init(VkInstance* instance, VkSurfaceKHR* surface
     /* call video extension override if necessary */
     if (l_VideoExtensionActive)
         return (*l_ExternalVideoFuncTable.VidExtFuncVkInit)(instance, surface, gpu, func);
+    return M64ERR_SUCCESS;
+}
+
+EXPORT uint32_t CALL VidVkExtGetSyncIndex(void)
+{
+    /* call video extension override if necessary */
+    if (l_VideoExtensionActive)
+        return (*l_ExternalVideoFuncTable.VidExtFuncVkGetSyncIndex)();
+    return M64ERR_SUCCESS;
+}
+
+EXPORT uint32_t CALL VidVkExtGetSyncIndexMask(void)
+{
+    /* call video extension override if necessary */
+    if (l_VideoExtensionActive)
+        return (*l_ExternalVideoFuncTable.VidExtFuncVkGetSyncIndexMask)();
     return M64ERR_SUCCESS;
 }
 
