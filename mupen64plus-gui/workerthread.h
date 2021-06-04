@@ -4,7 +4,6 @@
 #include <QThread>
 #include <QApplication>
 #include <QString>
-#include <QSurfaceFormat>
 #include "common.h"
 #include "discord/discord_game_sdk.h"
 

@@ -10,7 +10,6 @@
 static int init;
 static int needs_toggle;
 static int set_volume;
-static QSurfaceFormat format;
 
 PFN_vkVoidFunction qtvkGetInstanceProcAddr(VkInstance instance, const char* pName)
 {
@@ -19,21 +18,20 @@ PFN_vkVoidFunction qtvkGetInstanceProcAddr(VkInstance instance, const char* pNam
 
 uint32_t qtVidExtFuncVkGetSyncIndex()
 {
-    return w->getVulkanWindow()->currentSwapChainImageIndex();
+    return 0;
 }
 
 uint32_t qtVidExtFuncVkGetSyncIndexMask()
 {
-    return (1 << w->getVulkanWindow()->swapChainImageCount()) - 1;
+    return (1 << 32) - 1;
 }
 
 m64p_error qtVidExtFuncVkInit(VkInstance* instance, VkSurfaceKHR* surface, VkPhysicalDevice* gpu, PFN_vkGetInstanceProcAddr* func)
 {
     w->getWorkerThread()->createVulkanWindow();
-    while (!w->getVulkanWindow()->isValid()) {}
     *instance = w->getVulkanWindow()->vulkanInstance()->vkInstance();
     *surface = QVulkanInstance::surfaceForWindow(w->getVulkanWindow());
-    *gpu = w->getVulkanWindow()->physicalDevice();
+    *gpu = NULL;
     *func = qtvkGetInstanceProcAddr;
     return M64ERR_SUCCESS;
 }
@@ -42,15 +40,6 @@ m64p_error qtVidExtFuncInit(void)
 {
     init = 0;
     set_volume = 1;
-    format = QSurfaceFormat::defaultFormat();
-    format.setOption(QSurfaceFormat::DeprecatedFunctions, 1);
-    format.setDepthBufferSize(24);
-    format.setProfile(QSurfaceFormat::CompatibilityProfile);
-    format.setMajorVersion(2);
-    format.setMinorVersion(1);
-    format.setSwapInterval(0);
-    if (w->getGLES())
-        format.setRenderableType(QSurfaceFormat::OpenGLES);
 
     w->setRenderingThread(QThread::currentThread());
     return M64ERR_SUCCESS;
@@ -80,17 +69,6 @@ m64p_error qtVidExtFuncListRates(m64p_2d_size, int*, int*)
 
 m64p_error qtVidExtFuncSetMode(int Width, int Height, int, int ScreenMode, int)
 {
-    if (!init) {
-        w->getWorkerThread()->createVulkanWindow();
-#ifdef SINGLE_THREAD
-        QCoreApplication::processEvents();
-#else
-        while (!w->getVulkanWindow()->isValid()) {}
-#endif
-        w->getWorkerThread()->resizeMainWindow(Width, Height);
-        init = 1;
-        needs_toggle = ScreenMode;
-    }
     return M64ERR_SUCCESS;
 }
 
@@ -107,60 +85,6 @@ m64p_function qtVidExtFuncGLGetProc(const char* Proc)
 
 m64p_error qtVidExtFuncGLSetAttr(m64p_GLattr Attr, int Value)
 {
-    switch (Attr) {
-    case M64P_GL_DOUBLEBUFFER:
-        if (Value == 1)
-            format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-        else if (Value == 0)
-            format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
-        break;
-    case M64P_GL_BUFFER_SIZE:
-        break;
-    case M64P_GL_DEPTH_SIZE:
-        format.setDepthBufferSize(Value);
-        break;
-    case M64P_GL_RED_SIZE:
-        format.setRedBufferSize(Value);
-        break;
-    case M64P_GL_GREEN_SIZE:
-        format.setGreenBufferSize(Value);
-        break;
-    case M64P_GL_BLUE_SIZE:
-        format.setBlueBufferSize(Value);
-        break;
-    case M64P_GL_ALPHA_SIZE:
-        format.setAlphaBufferSize(Value);
-        break;
-    case M64P_GL_SWAP_CONTROL:
-        format.setSwapInterval(Value);
-        break;
-    case M64P_GL_MULTISAMPLEBUFFERS:
-        break;
-    case M64P_GL_MULTISAMPLESAMPLES:
-        format.setSamples(Value);
-        break;
-    case M64P_GL_CONTEXT_MAJOR_VERSION:
-        format.setMajorVersion(Value);
-        break;
-    case M64P_GL_CONTEXT_MINOR_VERSION:
-        format.setMinorVersion(Value);
-        break;
-    case M64P_GL_CONTEXT_PROFILE_MASK:
-        switch (Value) {
-        case M64P_GL_CONTEXT_PROFILE_CORE:
-            format.setProfile(QSurfaceFormat::CoreProfile);
-            break;
-        case M64P_GL_CONTEXT_PROFILE_COMPATIBILITY:
-            format.setProfile(QSurfaceFormat::CompatibilityProfile);
-            break;
-        case M64P_GL_CONTEXT_PROFILE_ES:
-            format.setRenderableType(QSurfaceFormat::OpenGLES);
-            break;
-        }
-
-        break;
-    }
-
     return M64ERR_SUCCESS;
 }
 

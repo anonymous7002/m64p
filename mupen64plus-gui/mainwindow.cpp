@@ -726,7 +726,7 @@ void MainWindow::showMessage(QString message)
 
 void MainWindow::createVulkanWindow()
 {
-    my_window = new QVulkanWindow();
+    my_window = new QWindow();
     my_inst = new QVulkanInstance();
     QVersionNumber version(1, 1);
     my_inst->setApiVersion(version);
@@ -996,7 +996,7 @@ WorkerThread* MainWindow::getWorkerThread()
     return workerThread;
 }
 
-QVulkanWindow* MainWindow::getVulkanWindow()
+QWindow* MainWindow::getVulkanWindow()
 {
     return my_window;
 }
