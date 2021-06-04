@@ -77,7 +77,7 @@ m64p_error OverrideVideoFunctions(m64p_video_extension_functions *VideoFunctionS
         VideoFunctionStruct->VidExtFuncVkInit == NULL ||
         VideoFunctionStruct->VidExtFuncVkGetSyncIndex == NULL ||
         VideoFunctionStruct->VidExtFuncVkGetSyncIndexMask == NULL ||
-        VideoFunctionStruct->VidExtFuncVkSetImage)
+        VideoFunctionStruct->VidExtFuncVkSetImage == NULL)
     {
         l_ExternalVideoFuncTable.Functions = 18;
         memset(&l_ExternalVideoFuncTable.VidExtFuncInit, 0, 18 * sizeof(void *));
