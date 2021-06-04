@@ -269,7 +269,7 @@ static void complete_frame_error()
 	retro_images[index].create_info.components.b = VK_COMPONENT_SWIZZLE_B;
 	retro_images[index].create_info.components.a = VK_COMPONENT_SWIZZLE_A;
 
-	//TODO vulkan->set_image(vulkan->handle, &retro_images[index], 0, nullptr, VK_QUEUE_FAMILY_IGNORED);
+	CoreVkVideo_SetImage(&retro_images[index]);
 	width = image->get_width();
 	height = image->get_height();
 	retro_image_handles[index] = image;
@@ -356,7 +356,7 @@ void complete_frame(GFX_INFO gfx_info)
 	retro_images[index].create_info.components.b = VK_COMPONENT_SWIZZLE_B;
 	retro_images[index].create_info.components.a = VK_COMPONENT_SWIZZLE_A;
 
-	//TODO vulkan->set_image(vulkan->handle, &retro_images[index], 0, nullptr, VK_QUEUE_FAMILY_IGNORED);
+	CoreVkVideo_SetImage(&retro_images[index]);
 	width = image->get_width();
 	height = image->get_height();
 	retro_image_handles[index] = image;

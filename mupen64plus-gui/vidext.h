@@ -25,6 +25,7 @@ uint32_t   qtVidExtFuncGLGetDefaultFramebuffer(void);
 m64p_error qtVidExtFuncVkInit(VkInstance* instance, VkSurfaceKHR* surface, VkPhysicalDevice* gpu, PFN_vkGetInstanceProcAddr* func);
 uint32_t   qtVidExtFuncVkGetSyncIndex(void);
 uint32_t   qtVidExtFuncVkGetSyncIndexMask(void);
+m64p_error qtVidExtFuncVkSetImage(const struct retro_vulkan_image *image);
 #ifdef __cplusplus
 }
 #endif

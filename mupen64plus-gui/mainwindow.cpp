@@ -23,7 +23,7 @@
 
 #define SETTINGS_VER 2
 
-m64p_video_extension_functions vidExtFunctions = {17,
+m64p_video_extension_functions vidExtFunctions = {18,
                                                  qtVidExtFuncInit,
                                                  qtVidExtFuncQuit,
                                                  qtVidExtFuncListModes,
@@ -40,7 +40,8 @@ m64p_video_extension_functions vidExtFunctions = {17,
                                                  qtVidExtFuncGLGetDefaultFramebuffer,
                                                  qtVidExtFuncVkInit,
                                                  qtVidExtFuncVkGetSyncIndex,
-                                                 qtVidExtFuncVkGetSyncIndexMask};
+                                                 qtVidExtFuncVkGetSyncIndexMask,
+                                                 qtVidExtFuncVkSetImage};
 
 void MainWindow::updatePlugins()
 {

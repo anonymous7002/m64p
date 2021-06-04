@@ -43,7 +43,7 @@
 #endif
 
 /* local variables */
-static m64p_video_extension_functions l_ExternalVideoFuncTable = {17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+static m64p_video_extension_functions l_ExternalVideoFuncTable = {18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 static int l_VideoExtensionActive = 0;
 static int l_VideoOutputActive = 0;
 static int l_Fullscreen = 0;
@@ -56,7 +56,7 @@ m64p_error OverrideVideoFunctions(m64p_video_extension_functions *VideoFunctionS
     /* check input data */
     if (VideoFunctionStruct == NULL)
         return M64ERR_INPUT_ASSERT;
-    if (VideoFunctionStruct->Functions < 15)
+    if (VideoFunctionStruct->Functions < 18)
         return M64ERR_INPUT_INVALID;
 
     /* disable video extension if any of the function pointers are NULL */
@@ -76,10 +76,11 @@ m64p_error OverrideVideoFunctions(m64p_video_extension_functions *VideoFunctionS
         VideoFunctionStruct->VidExtFuncGLGetDefaultFramebuffer == NULL ||
         VideoFunctionStruct->VidExtFuncVkInit == NULL ||
         VideoFunctionStruct->VidExtFuncVkGetSyncIndex == NULL ||
-        VideoFunctionStruct->VidExtFuncVkGetSyncIndexMask == NULL)
+        VideoFunctionStruct->VidExtFuncVkGetSyncIndexMask == NULL ||
+        VideoFunctionStruct->VidExtFuncVkSetImage)
     {
-        l_ExternalVideoFuncTable.Functions = 17;
-        memset(&l_ExternalVideoFuncTable.VidExtFuncInit, 0, 17 * sizeof(void *));
+        l_ExternalVideoFuncTable.Functions = 18;
+        memset(&l_ExternalVideoFuncTable.VidExtFuncInit, 0, 18 * sizeof(void *));
         l_VideoExtensionActive = 0;
         return M64ERR_SUCCESS;
     }
@@ -121,6 +122,14 @@ EXPORT uint32_t CALL VidVkExtGetSyncIndexMask(void)
     /* call video extension override if necessary */
     if (l_VideoExtensionActive)
         return (*l_ExternalVideoFuncTable.VidExtFuncVkGetSyncIndexMask)();
+    return M64ERR_SUCCESS;
+}
+
+EXPORT m64p_error CALL VidVkExtSetImage(const struct retro_vulkan_image *image)
+{
+    /* call video extension override if necessary */
+    if (l_VideoExtensionActive)
+        return (*l_ExternalVideoFuncTable.VidExtFuncVkSetImage)(image);
     return M64ERR_SUCCESS;
 }
 

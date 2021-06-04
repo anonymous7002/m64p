@@ -411,6 +411,13 @@ typedef enum {
   M64P_GL_CONTEXT_PROFILE_ES
 } m64p_GLContextType;
 
+struct retro_vulkan_image
+{
+    VkImageView image_view;
+    VkImageLayout image_layout;
+    VkImageViewCreateInfo create_info;
+};
+
 typedef struct {
   unsigned int Functions;
   m64p_error    (*VidExtFuncInit)(void);
@@ -430,6 +437,7 @@ typedef struct {
   m64p_error    (*VidExtFuncVkInit)(VkInstance*, VkSurfaceKHR*, VkPhysicalDevice*, PFN_vkGetInstanceProcAddr*);
   uint32_t      (*VidExtFuncVkGetSyncIndex)(void);
   uint32_t      (*VidExtFuncVkGetSyncIndexMask)(void);
+  m64p_error    (*VidExtFuncVkSetImage)(const struct retro_vulkan_image *);
 } m64p_video_extension_functions;
 
 #endif /* define M64P_TYPES_H */

@@ -46,6 +46,11 @@ typedef uint32_t (*ptr_VidVkExtGetSyncIndexMask)(void);
 #if defined(M64P_CORE_PROTOTYPES)
 EXPORT uint32_t CALL VidVkExtGetSyncIndexMask(void);
 #endif
+
+typedef m64p_error (*ptr_VidVkExtSetImage)(const struct retro_vulkan_image *image);
+#if defined(M64P_CORE_PROTOTYPES)
+EXPORT m64p_error CALL VidVkExtSetImage(const struct retro_vulkan_image *image);
+#endif
 /* VidExt_Init()
  *
  * This function should be called from within the InitiateGFX() video plugin

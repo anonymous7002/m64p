@@ -7,13 +7,7 @@
 
 extern ptr_VidVkExtGetSyncIndex                      CoreVkVideo_GetSyncIndex;
 extern ptr_VidVkExtGetSyncIndexMask                  CoreVkVideo_GetSyncIndexMask;
-
-struct retro_vulkan_image
- {
-  VkImageView image_view;
-  VkImageLayout image_layout;
-  VkImageViewCreateInfo create_info;
- };
+extern ptr_VidVkExtSetImage                          CoreVkVideo_SetImage;
 
 namespace RDP
 {

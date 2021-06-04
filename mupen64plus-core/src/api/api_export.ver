@@ -81,4 +81,5 @@ VidExt_GL_GetDefaultFramebuffer;
 VidVkExt_Init;
 VidVkExtGetSyncIndex;
 VidVkExtGetSyncIndexMask;
+VidVkExtSetImage;
 local: *; };
