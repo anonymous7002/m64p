@@ -726,6 +726,8 @@ void MainWindow::createVulkanWindow()
 {
     my_window = new QVulkanWindow();
     my_inst = new QVulkanInstance();
+    QVersionNumber version(1, 1);
+    my_inst->setApiVersion(version);
     my_inst->create();
     my_window->setVulkanInstance(my_inst);
     QWidget *container = QWidget::createWindowContainer(my_window, this);
