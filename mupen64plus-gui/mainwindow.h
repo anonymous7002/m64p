@@ -9,9 +9,9 @@ extern "C" {
 #include "osal/osal_dynamiclib.h"
 }
 #include <QMainWindow>
-#include <QWindow>
-#include <QVulkanInstance>
+#include <QVulkanWindow>
 #include <QSettings>
+#include <QSurfaceFormat>
 #include <QWidgetAction>
 #include <QSlider>
 #include <QLabel>
@@ -33,7 +33,7 @@ class MainWindow : public QMainWindow
 
 public:
     WorkerThread* getWorkerThread();
-    QWindow* getVulkanWindow();
+    QVulkanWindow* getVulkanWindow();
     QSettings* getSettings();
     LogViewer* getLogViewer();
 
@@ -145,7 +145,7 @@ private:
     int gles;
     QString m_title;
 
-    QWindow *my_window = nullptr;
+    QVulkanWindow *my_window = nullptr;
     QVulkanInstance *my_inst = nullptr;
     QThread *rendering_thread = nullptr;
     WorkerThread *workerThread = nullptr;

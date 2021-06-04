@@ -2,7 +2,7 @@
 #define VIDEXT_H
 
 #include "m64p_types.h"
-#include <QWindow>
+#include <QVulkanWindow>
 
 #ifdef __cplusplus
 
