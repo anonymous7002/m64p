@@ -29,7 +29,6 @@ uint32_t qtVidExtFuncVkGetSyncIndexMask()
 
 m64p_error qtVidExtFuncVkSetImage(const struct retro_vulkan_image *image)
 {
-    printf("hello\n");
     return M64ERR_SUCCESS;
 }
 m64p_error qtVidExtFuncVkInit(VkInstance* instance, VkSurfaceKHR* surface, VkPhysicalDevice* gpu, PFN_vkGetInstanceProcAddr* func)

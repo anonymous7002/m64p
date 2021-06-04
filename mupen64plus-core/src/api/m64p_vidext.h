@@ -47,9 +47,9 @@ typedef uint32_t (*ptr_VidVkExtGetSyncIndexMask)(void);
 EXPORT uint32_t CALL VidVkExtGetSyncIndexMask(void);
 #endif
 
-typedef m64p_error (*ptr_VidVkExtSetImage)(const struct retro_vulkan_image *image);
+typedef m64p_error (*ptr_VidVkExtSetImage)(const struct retro_vulkan_image *);
 #if defined(M64P_CORE_PROTOTYPES)
-EXPORT m64p_error CALL VidVkExtSetImage(const struct retro_vulkan_image *image);
+EXPORT m64p_error CALL VidVkExtSetImage(const struct retro_vulkan_image *);
 #endif
 /* VidExt_Init()
  *
