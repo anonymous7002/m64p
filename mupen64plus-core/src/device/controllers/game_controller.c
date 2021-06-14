@@ -155,6 +155,19 @@ const struct game_controller_flavor g_mouse_controller_flavor =
     mouse_controller_reset
 };
 
+/* VRU controller */
+static void vru_controller_reset(struct game_controller* cont)
+{
+    cont->status = 0x00;
+}
+
+const struct game_controller_flavor g_vru_controller_flavor =
+{
+    "VRU controller",
+    JDT_VRU,
+    vru_controller_reset
+};
+
 
 void init_game_controller(struct game_controller* cont,
     const struct game_controller_flavor* flavor,
@@ -209,7 +222,8 @@ static void process_controller_command(void* jbd,
     case JCMD_CONTROLLER_READ: {
         JOYBUS_CHECK_COMMAND_FORMAT(1, 4)
 
-        *((uint32_t*)(rx_buf)) = input_;
+        if (cont->flavor->type != JDT_VRU)
+            *((uint32_t*)(rx_buf)) = input_;
 #ifdef COMPARE_CORE
         CoreCompareDataSync(4, rx_buf);
 #endif
@@ -223,6 +237,39 @@ static void process_controller_command(void* jbd,
     case JCMD_PAK_WRITE: {
         JOYBUS_CHECK_COMMAND_FORMAT(35, 1)
         pak_write_block(cont, &tx_buf[1], &tx_buf[3], &rx_buf[0]);
+    } break;
+
+    case JCMD_VRU_READ_STATUS: {
+        JOYBUS_CHECK_COMMAND_FORMAT(3, 3)
+        rx_buf[0] = 1; // This might be 0 for Japan
+        rx_buf[1] = 0;
+        rx_buf[2] = pak_data_crc(&rx_buf[0], 2);
+        cont->status = 1; // status of 1 means the VRU is initialized and can be used
+    } break;
+
+    case JCMD_VRU_WRITE_CONFIG: {
+        JOYBUS_CHECK_COMMAND_FORMAT(7, 1)
+        //uses: (shown is byteswapped)
+        //000 0200xx00	clears x strings from device
+        //000 00000700	used when VRU Status is 1, 3, or 5 before setting words
+        //000 05000000	stops listening
+        //000 00000600	starts listening
+        rx_buf[0] = pak_data_crc(&tx_buf[3], 4);
+        cont->status = 0; // status is always set to 0 after a write
+    } break;
+
+    case JCMD_VRU_WRITE_INIT: {
+        JOYBUS_CHECK_COMMAND_FORMAT(3, 1)
+        // not sure if we need to do anything with this
+        // from what I've read this is for settings on the microphone like gain and pitch
+        rx_buf[0] = 0;
+    } break;
+
+    case JCMD_VRU_WRITE: {
+        JOYBUS_CHECK_COMMAND_FORMAT(23, 1)
+        // I believe this command is used to load the word list on the VRU
+        rx_buf[0] = pak_data_crc(&tx_buf[3], 20);
+        cont->status = 0; // status is always set to 0 after a write
     } break;
 
     default:

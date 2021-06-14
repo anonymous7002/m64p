@@ -1587,6 +1587,8 @@ m64p_error main_run(void)
              */
             const struct game_controller_flavor* cont_flavor =
                 &g_standard_controller_flavor;
+            if (i == 3)
+                cont_flavor = &g_vru_controller_flavor;
 
             joybus_devices[i] = &g_dev.controllers[i];
             ijoybus_devices[i] = &g_ijoybus_device_controller;

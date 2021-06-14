@@ -77,5 +77,6 @@ extern const struct joybus_device_interface
 /* Controller flavors */
 extern const struct game_controller_flavor g_standard_controller_flavor;
 extern const struct game_controller_flavor g_mouse_controller_flavor;
+extern const struct game_controller_flavor g_vru_controller_flavor;
 
 #endif
