@@ -1150,8 +1150,6 @@ void MainWindow::loadPlugins()
 
     QString file_path;
     QString plugin_path;
-	
-    plugin_path = QDir(pluginPath).filePath(file_path);
     
     res = osal_dynlib_open(&gfxPlugin, plugin_path.toUtf8().constData());
     if (res != M64ERR_SUCCESS)
