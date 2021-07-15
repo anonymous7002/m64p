@@ -101,7 +101,7 @@ void MainWindow::updatePlugins()
             settings->setValue("rspPlugin", current.at(0));
     }
 	
-	ui->actionController_Configuration->setEnabled(settings->value("inputPlugin").toString().contains("-qt"));
+	ui->actionInput_Configuration->setEnabled(settings->value("inputPlugin").toString().contains("-qt"));
 }
 
 void MainWindow::updatePIF(Ui::MainWindow *ui)
