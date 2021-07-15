@@ -26,8 +26,11 @@ void SettingsDialog::handlePluginButton()
     if (!fileName.isNull()) {
         pluginPath->setText(fileName);
         w->getSettings()->setValue("pluginDirPath", fileName);
-
-        w->getSettings()->remove("inputPlugin");
+	
+		w->getSettings()->remove("gfxPlugin");
+		w->getSettings()->remove("audioPlugin");
+		w->getSettings()->remove("inputPlugin");
+		w->getSettings()->remove("rspPlugin");
         w->updatePlugins();
     }
 }
@@ -58,8 +61,11 @@ void SettingsDialog::handleCoreEdit()
 void SettingsDialog::handlePluginEdit()
 {
     w->getSettings()->setValue("pluginDirPath", pluginPath->text());
-
+	
+	w->getSettings()->remove("gfxPlugin");
+	w->getSettings()->remove("audioPlugin");
     w->getSettings()->remove("inputPlugin");
+	w->getSettings()->remove("rspPlugin");
     w->updatePlugins();
 }
 
@@ -132,9 +138,49 @@ void SettingsDialog::initStuff()
     QStringList Filter;
     Filter.append("");
     QStringList current;
-
+	
+	QLabel *videoLabel = new QLabel("Video Plugin", this);
+    layout->addWidget(videoLabel,5,0);
+    QComboBox *videoChoice = new QComboBox(this);
+    Filter.replace(0,"mupen64plus-video*");
+    current = PluginDir.entryList(Filter);
+    videoChoice->addItems(current);
+    QString qtVideoPlugin = w->getSettings()->value("gfxPlugin").toString();
+    int video_index = videoChoice->findText(qtVideoPlugin);
+    if (video_index == -1) {
+        videoChoice->addItem(qtVideoPlugin);
+        video_index = videoChoice->findText(qtVideoPlugin);
+    }
+    videoChoice->setCurrentIndex(video_index);
+    connect(videoChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
+        [=](const QString &text) {
+            w->getSettings()->setValue("gfxPlugin", text);
+            w->updatePlugins();
+    });
+    layout->addWidget(videoChoice,5,1);
+	
+	QLabel *audioLabel = new QLabel("Audio Plugin", this);
+    layout->addWidget(audioLabel,6,0);
+    QComboBox *audioChoice = new QComboBox(this);
+    Filter.replace(0,"mupen64plus-audio*");
+    current = PluginDir.entryList(Filter);
+    audioChoice->addItems(current);
+    QString qtAudioPlugin = w->getSettings()->value("audioPlugin").toString();
+    int audio_index = audioChoice->findText(qtAudioPlugin);
+    if (audio_index == -1) {
+        audioChoice->addItem(qtAudioPlugin);
+        audio_index = audioChoice->findText(qtAudioPlugin);
+    }
+    audioChoice->setCurrentIndex(audio_index);
+    connect(audioChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
+        [=](const QString &text) {
+            w->getSettings()->setValue("audioPlugin", text);
+            w->updatePlugins();
+    });
+    layout->addWidget(audioChoice,6,1);
+	
     QLabel *inputLabel = new QLabel("Input Plugin", this);
-    layout->addWidget(inputLabel,5,0);
+    layout->addWidget(inputLabel,7,0);
     QComboBox *inputChoice = new QComboBox(this);
     Filter.replace(0,"mupen64plus-input*");
     current = PluginDir.entryList(Filter);
@@ -151,7 +197,27 @@ void SettingsDialog::initStuff()
             w->getSettings()->setValue("inputPlugin", text);
             w->updatePlugins();
     });
-    layout->addWidget(inputChoice,5,1);
+    layout->addWidget(inputChoice,7,1);
+	
+	QLabel *rspLabel = new QLabel("RSP Plugin", this);
+    layout->addWidget(rspLabel,8,0);
+    QComboBox *rspChoice = new QComboBox(this);
+    Filter.replace(0,"mupen64plus-rsp*");
+    current = PluginDir.entryList(Filter);
+    rspChoice->addItems(current);
+    QString qtRSPPlugin = w->getSettings()->value("rspPlugin").toString();
+    int rsp_index = rspChoice->findText(qtRSPPlugin);
+    if (rsp_index == -1) {
+        rspChoice->addItem(qtRSPPlugin);
+        rsp_index = rspChoice->findText(qtRSPPlugin);
+    }
+    rspChoice->setCurrentIndex(rsp_index);
+    connect(rspChoice, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
+        [=](const QString &text) {
+            w->getSettings()->setValue("rspPlugin", text);
+            w->updatePlugins();
+    });
+    layout->addWidget(rspChoice,8,1);
 
     setLayout(layout);
 }

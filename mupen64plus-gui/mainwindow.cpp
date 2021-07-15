@@ -49,6 +49,31 @@ void MainWindow::updatePlugins()
     Filter.append("");
     QStringList current;
     QString default_value;
+	
+	if (!settings->contains("gfxPlugin")) {
+        Filter.replace(0,"mupen64plus-video*");
+        current = PluginDir.entryList(Filter);
+        default_value = "mupen64plus-video-parallel";
+        default_value += OSAL_DLL_EXTENSION;
+        if (current.isEmpty())
+            settings->setValue("gfxPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("gfxPlugin", default_value);
+        else
+            settings->setValue("gfxPlugin", current.at(0));
+    }
+	if (!settings->contains("audioPlugin")) {
+        Filter.replace(0,"mupen64plus-audio*");
+        current = PluginDir.entryList(Filter);
+        default_value = "mupen64plus-audio-sdl2";
+        default_value += OSAL_DLL_EXTENSION;
+        if (current.isEmpty())
+            settings->setValue("audioPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("audioPlugin", default_value);
+        else
+            settings->setValue("audioPlugin", current.at(0));
+    }
 
     if (!settings->contains("inputPlugin")) {
         Filter.replace(0,"mupen64plus-input*");
@@ -62,8 +87,21 @@ void MainWindow::updatePlugins()
         else
             settings->setValue("inputPlugin", current.at(0));
     }
-
-    ui->actionController_Configuration->setEnabled(settings->value("inputPlugin").toString().contains("-qt"));
+	
+	if (!settings->contains("rspPlugin")) {
+        Filter.replace(0,"mupen64plus-rsp*");
+        current = PluginDir.entryList(Filter);
+        default_value = "mupen64plus-rsp-parallel";
+        default_value += OSAL_DLL_EXTENSION;
+        if (current.isEmpty())
+            settings->setValue("rspPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("rspPlugin", default_value);
+        else
+            settings->setValue("rspPlugin", current.at(0));
+    }
+	
+	ui->actionInput_Configuration->setEnabled(settings->value("inputPlugin").toString().contains("-qt"));
 }
 
 void MainWindow::updatePIF(Ui::MainWindow *ui)
@@ -908,7 +946,7 @@ void MainWindow::on_actionLoad_State_From_triggered()
     }
 }
 
-void MainWindow::on_actionController_Configuration_triggered()
+void MainWindow::on_actionInput_Configuration_triggered()
 {
     if (!coreLib) return;
 
@@ -934,6 +972,14 @@ void MainWindow::on_actionToggle_Speed_Limiter_triggered()
 void MainWindow::on_actionView_Log_triggered()
 {
     logViewer.show();
+}
+
+void MainWindow::on_actionVideo_Configuration_triggered()
+{
+    typedef void (*Config_Func)();
+    Config_Func PluginConfig = (Config_Func) osal_dynlib_getproc(gfxPlugin, "PluginConfig");
+    if (PluginConfig)
+        PluginConfig();
 }
 
 void MainWindow::on_actionCreate_Room_triggered()
@@ -1104,11 +1150,7 @@ void MainWindow::loadPlugins()
 
     QString file_path;
     QString plugin_path;
-
-    file_path = "mupen64plus-video-parallel";
-    file_path += OSAL_DLL_EXTENSION;
-    plugin_path = QDir(pluginPath).filePath(file_path);
-
+    
     res = osal_dynlib_open(&gfxPlugin, plugin_path.toUtf8().constData());
     if (res != M64ERR_SUCCESS)
     {
@@ -1116,14 +1158,9 @@ void MainWindow::loadPlugins()
         msgBox.exec();
         return;
     }
-	
     PluginStartup = (ptr_PluginStartup) osal_dynlib_getproc(gfxPlugin, "PluginStartup");
     (*PluginStartup)(coreLib, (char*)"Video", DebugCallback);
-
-    file_path = "mupen64plus-audio-sdl2";
-    file_path += OSAL_DLL_EXTENSION;
-    plugin_path = QDir(pluginPath).filePath(file_path);
-
+	
     res = osal_dynlib_open(&audioPlugin, plugin_path.toUtf8().constData());
     if (res != M64ERR_SUCCESS)
     {
@@ -1135,7 +1172,8 @@ void MainWindow::loadPlugins()
     (*PluginStartup)(coreLib, (char*)"Audio", DebugCallback);
 
     res = osal_dynlib_open(&inputPlugin, QDir(pluginPath).filePath(settings->value("inputPlugin").toString()).toUtf8().constData());
-    if (res != M64ERR_SUCCESS)
+    
+	if (res != M64ERR_SUCCESS)
     {
         msgBox.setText("Failed to load input plugin");
         msgBox.exec();
@@ -1146,12 +1184,7 @@ void MainWindow::loadPlugins()
         (*PluginStartup)(coreLib, this, DebugCallback);
     else
         (*PluginStartup)(coreLib, (char*)"Input", DebugCallback);
-
-
-    file_path = "mupen64plus-rsp-parallel";
-    file_path += OSAL_DLL_EXTENSION;
-    plugin_path = QDir(pluginPath).filePath(file_path);
-
+	
     res = osal_dynlib_open(&rspPlugin, plugin_path.toUtf8().constData());
     if (res != M64ERR_SUCCESS)
     {

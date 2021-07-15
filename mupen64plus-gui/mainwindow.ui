@@ -46,7 +46,8 @@
     </property>
     <addaction name="actionPlugin_Paths"/>
     <addaction name="actionPlugin_Settings"/>
-    <addaction name="actionController_Configuration"/>
+    <addaction name="actionVideo_Configuration"/>
+	<addaction name="actionInput_Configuration"/>
    </widget>
    <widget class="QMenu" name="menuEmulation">
     <property name="title">
@@ -101,7 +102,7 @@
   </action>
   <action name="actionPlugin_Settings">
    <property name="text">
-    <string>Core and Video Settings</string>
+    <string>Core Settings</string>
    </property>
   </action>
   <action name="actionOpen_Recent">
@@ -164,9 +165,14 @@
     <string>Toggle Fullscreen (Alt + Return)</string>
    </property>
   </action>
-  <action name="actionController_Configuration">
+  <action name="actionVideo_Configuration">
    <property name="text">
-    <string>Controller Configuration</string>
+    <string>Video Configuration</string>
+   </property>
+  </action>
+  <action name="actionInput_Configuration">
+   <property name="text">
+    <string>Input Configuration</string>
    </property>
   </action>
   <action name="actionToggle_Speed_Limiter">

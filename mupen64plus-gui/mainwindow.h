@@ -113,9 +113,11 @@ private slots:
 
     void on_actionLoad_State_From_triggered();
 
-    void on_actionController_Configuration_triggered();
+    void on_actionInput_Configuration_triggered();
 
     void on_actionToggle_Speed_Limiter_triggered();
+
+    void on_actionVideo_Configuration_triggered();
 
     void on_actionView_Log_triggered();
 
