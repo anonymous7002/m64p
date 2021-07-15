@@ -100,8 +100,11 @@ void MainWindow::updatePlugins()
         else
             settings->setValue("rspPlugin", current.at(0));
     }
-
-    ui->actionController_Configuration->setEnabled(settings->value("inputPlugin").toString().contains("-qt"));
+	
+	ui->actionController_Configuration->setEnabled(settings->value("gfxPlugin"));
+    ui->actionController_Configuration->setEnabled(settings->value("audioPlugin"));
+	ui->actionController_Configuration->setEnabled(settings->value("inputPlugin"));
+	ui->actionController_Configuration->setEnabled(settings->value("rspPlugin"));
 }
 
 void MainWindow::updatePIF(Ui::MainWindow *ui)
