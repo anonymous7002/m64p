@@ -47,9 +47,7 @@
     <addaction name="actionPlugin_Paths"/>
     <addaction name="actionPlugin_Settings"/>
     <addaction name="actionVideo_Configuration"/>
-	<addaction name="actionAudio_Configuration"/>
 	<addaction name="actionInput_Configuration"/>
-	<addaction name="actionRSP_Configuration"/>
    </widget>
    <widget class="QMenu" name="menuEmulation">
     <property name="title">
@@ -172,19 +170,9 @@
     <string>Video Configuration</string>
    </property>
   </action>
-  <action name="actionAudio_Configuration">
-   <property name="text">
-    <string>Audio Configuration</string>
-   </property>
-  </action>
   <action name="actionInput_Configuration">
    <property name="text">
     <string>Input Configuration</string>
-   </property>
-  </action>
-    <action name="actionRSP_Configuration">
-   <property name="text">
-    <string>RSP Configuration</string>
    </property>
   </action>
   <action name="actionToggle_Speed_Limiter">

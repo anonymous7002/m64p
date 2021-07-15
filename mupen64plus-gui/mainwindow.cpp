@@ -100,6 +100,8 @@ void MainWindow::updatePlugins()
         else
             settings->setValue("rspPlugin", current.at(0));
     }
+	
+	ui->actionController_Configuration->setEnabled(settings->value("inputPlugin").toString().contains("-qt"));
 }
 
 void MainWindow::updatePIF(Ui::MainWindow *ui)
@@ -944,7 +946,7 @@ void MainWindow::on_actionLoad_State_From_triggered()
     }
 }
 
-void MainWindow::on_actionController_Configuration_triggered()
+void MainWindow::on_actionInput_Configuration_triggered()
 {
     if (!coreLib) return;
 
@@ -970,6 +972,14 @@ void MainWindow::on_actionToggle_Speed_Limiter_triggered()
 void MainWindow::on_actionView_Log_triggered()
 {
     logViewer.show();
+}
+
+void MainWindow::on_actionVideo_Configuration_triggered()
+{
+    typedef void (*Config_Func)();
+    Config_Func PluginConfig = (Config_Func) osal_dynlib_getproc(gfxPlugin, "PluginConfig");
+    if (PluginConfig)
+        PluginConfig();
 }
 
 void MainWindow::on_actionCreate_Room_triggered()
