@@ -100,11 +100,6 @@ void MainWindow::updatePlugins()
         else
             settings->setValue("rspPlugin", current.at(0));
     }
-	
-	ui->actionVideo_Configuration->setEnabled(settings->value("gfxPlugin").toString()));
-	ui->actionAudio_Configuration->setEnabled(settings->value("audioPlugin").toString());
-	ui->actionInput_Configuration->setEnabled(settings->value("inputPlugin").toString());
-	ui->actionRSP_Configuration->setEnabled(settings->value("rspPlugin").toString());
 }
 
 void MainWindow::updatePIF(Ui::MainWindow *ui)
@@ -1145,7 +1140,6 @@ void MainWindow::loadPlugins()
 
     QString plugin_path;
     
-	plugin_path = ;
 	res = osal_dynlib_open(&gfxPlugin, QDir(pluginPath).filePath(settings->value("gfxPlugin").toString()).toUtf8().constData());
     
 	if (res != M64ERR_SUCCESS)
