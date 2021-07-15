@@ -1148,20 +1148,22 @@ void MainWindow::loadPlugins()
     QString pluginPath = settings->value("pluginDirPath").toString();
     pluginPath.replace("$APP_PATH$", QCoreApplication::applicationDirPath());
 
-    QString file_path;
     QString plugin_path;
     
-    res = osal_dynlib_open(&gfxPlugin, plugin_path.toUtf8().constData());
-    if (res != M64ERR_SUCCESS)
+	res = osal_dynlib_open(&gfxPlugin, QDir(pluginPath).filePath(settings->value("gfxPlugin").toString()).toUtf8().constData());
+    
+	if (res != M64ERR_SUCCESS)
     {
         msgBox.setText("Failed to load video plugin");
         msgBox.exec();
         return;
     }
+	
     PluginStartup = (ptr_PluginStartup) osal_dynlib_getproc(gfxPlugin, "PluginStartup");
     (*PluginStartup)(coreLib, (char*)"Video", DebugCallback);
 	
-    res = osal_dynlib_open(&audioPlugin, plugin_path.toUtf8().constData());
+	res = osal_dynlib_open(&audioPlugin, QDir(pluginPath).filePath(settings->value("audioPlugin").toString()).toLocal8Bit().constData());
+	
     if (res != M64ERR_SUCCESS)
     {
         msgBox.setText("Failed to load audio plugin");
@@ -1185,8 +1187,9 @@ void MainWindow::loadPlugins()
     else
         (*PluginStartup)(coreLib, (char*)"Input", DebugCallback);
 	
-    res = osal_dynlib_open(&rspPlugin, plugin_path.toUtf8().constData());
-    if (res != M64ERR_SUCCESS)
+    res = osal_dynlib_open(&rspPlugin, QDir(pluginPath).filePath(settings->value("rspPlugin").toString()).toUtf8().constData());
+    
+	if (res != M64ERR_SUCCESS)
     {
         msgBox.setText("Failed to load rsp plugin");
         msgBox.exec();
