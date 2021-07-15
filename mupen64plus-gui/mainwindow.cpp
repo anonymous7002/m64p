@@ -49,6 +49,31 @@ void MainWindow::updatePlugins()
     Filter.append("");
     QStringList current;
     QString default_value;
+	
+	if (!settings->contains("gfxPlugin")) {
+        Filter.replace(0,"mupen64plus-video*");
+        current = PluginDir.entryList(Filter);
+        default_value = "mupen64plus-video-parallel";
+        default_value += OSAL_DLL_EXTENSION;
+        if (current.isEmpty())
+            settings->setValue("gfxPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("gfxPlugin", default_value);
+        else
+            settings->setValue("gfxPlugin", current.at(0));
+    }
+	if (!settings->contains("audioPlugin")) {
+        Filter.replace(0,"mupen64plus-audio*");
+        current = PluginDir.entryList(Filter);
+        default_value = "mupen64plus-audio-sdl2";
+        default_value += OSAL_DLL_EXTENSION;
+        if (current.isEmpty())
+            settings->setValue("audioPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("audioPlugin", default_value);
+        else
+            settings->setValue("audioPlugin", current.at(0));
+    }
 
     if (!settings->contains("inputPlugin")) {
         Filter.replace(0,"mupen64plus-input*");
@@ -61,6 +86,19 @@ void MainWindow::updatePlugins()
             settings->setValue("inputPlugin", default_value);
         else
             settings->setValue("inputPlugin", current.at(0));
+    }
+	
+	if (!settings->contains("rspPlugin")) {
+        Filter.replace(0,"mupen64plus-rsp*");
+        current = PluginDir.entryList(Filter);
+        default_value = "mupen64plus-rsp-parallel";
+        default_value += OSAL_DLL_EXTENSION;
+        if (current.isEmpty())
+            settings->setValue("rspPlugin", "dummy");
+        else if (current.indexOf(default_value) != -1)
+            settings->setValue("rspPlugin", default_value);
+        else
+            settings->setValue("rspPlugin", current.at(0));
     }
 
     ui->actionController_Configuration->setEnabled(settings->value("inputPlugin").toString().contains("-qt"));
