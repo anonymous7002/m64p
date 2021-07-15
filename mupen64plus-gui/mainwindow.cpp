@@ -101,10 +101,10 @@ void MainWindow::updatePlugins()
             settings->setValue("rspPlugin", current.at(0));
     }
 	
-	ui->actionController_Configuration->setEnabled(settings->value("gfxPlugin"));
-    ui->actionController_Configuration->setEnabled(settings->value("audioPlugin"));
-	ui->actionController_Configuration->setEnabled(settings->value("inputPlugin"));
-	ui->actionController_Configuration->setEnabled(settings->value("rspPlugin"));
+	ui->actionVideo_Configuration->setEnabled(settings->value("gfxPlugin"));
+    ui->actionAudio_Configuration->setEnabled(settings->value("audioPlugin"));
+	ui->actionInput_Configuration->setEnabled(settings->value("inputPlugin"));
+	ui->actionRSP_Configuration->setEnabled(settings->value("rspPlugin"));
 }
 
 void MainWindow::updatePIF(Ui::MainWindow *ui)
