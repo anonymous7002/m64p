@@ -1104,6 +1104,10 @@ void MainWindow::loadPlugins()
 
     QString file_path;
     QString plugin_path;
+	
+	file_path = "mupen64plus-video-parallel";
+    file_path += OSAL_DLL_EXTENSION;
+    plugin_path = QDir(pluginPath).filePath(file_path);
 
     res = osal_dynlib_open(&gfxPlugin, plugin_path.toUtf8().constData());
     if (res != M64ERR_SUCCESS)
@@ -1115,6 +1119,10 @@ void MainWindow::loadPlugins()
 	
     PluginStartup = (ptr_PluginStartup) osal_dynlib_getproc(gfxPlugin, "PluginStartup");
     (*PluginStartup)(coreLib, (char*)"Video", DebugCallback);
+	
+	file_path = "mupen64plus-audio-sdl2";
+    file_path += OSAL_DLL_EXTENSION;
+    plugin_path = QDir(pluginPath).filePath(file_path);
 
     res = osal_dynlib_open(&audioPlugin, plugin_path.toUtf8().constData());
     if (res != M64ERR_SUCCESS)
@@ -1125,6 +1133,10 @@ void MainWindow::loadPlugins()
     }
     PluginStartup = (ptr_PluginStartup) osal_dynlib_getproc(audioPlugin, "PluginStartup");
     (*PluginStartup)(coreLib, (char*)"Audio", DebugCallback);
+	
+	file_path = "mupen64plus-input-qt";
+    file_path += OSAL_DLL_EXTENSION;
+    plugin_path = QDir(pluginPath).filePath(file_path);
 
     res = osal_dynlib_open(&inputPlugin, QDir(pluginPath).filePath(settings->value("inputPlugin").toString()).toUtf8().constData());
     if (res != M64ERR_SUCCESS)
@@ -1138,6 +1150,10 @@ void MainWindow::loadPlugins()
         (*PluginStartup)(coreLib, this, DebugCallback);
     else
         (*PluginStartup)(coreLib, (char*)"Input", DebugCallback);
+	
+	file_path = "mupen64plus-rsp-parallel";
+    file_path += OSAL_DLL_EXTENSION;
+    plugin_path = QDir(pluginPath).filePath(file_path);
 	
     res = osal_dynlib_open(&rspPlugin, plugin_path.toUtf8().constData());
     if (res != M64ERR_SUCCESS)
