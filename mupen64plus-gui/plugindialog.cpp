@@ -27,6 +27,7 @@ QGridLayout *rspLayout;
 int rspRow;
 QGridLayout *videoLayout;
 int videoRow;
+QSettings *settings;
 
 static void paramListCallback(void * context, const char *ParamName, m64p_type ParamType)
 {
@@ -176,8 +177,7 @@ PluginDialog::PluginDialog(QWidget *parent)
     QWidget *rspSettings = new QWidget;
     rspLayout = new QGridLayout;
     rspSettings->setLayout(rspLayout);
-    QString name;
-	name->setText(w->getSettings()->value("rspPlugin").toString());
+    QString name = settings->value("rspPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     QStringList name2 = name.split("-");
     name.remove(name2.at(0) + "-");
@@ -195,7 +195,7 @@ PluginDialog::PluginDialog(QWidget *parent)
     QWidget *audioSettings = new QWidget;
     audioLayout = new QGridLayout;
     audioSettings->setLayout(audioLayout);
-    name->setText(w->getSettings()->value("audioPlugin").toString());
+    name = settings->value("audioPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
     name.remove(name2.at(0) + "-");
@@ -212,7 +212,7 @@ PluginDialog::PluginDialog(QWidget *parent)
     QWidget *videoSettings = new QWidget;
     videoLayout = new QGridLayout;
     videoSettings->setLayout(videoLayout);
-    name->setText(w->getSettings()->value("videoPlugin").toString());
+    name = settings->value("videoPlugin").toString();
     name.remove(OSAL_DLL_EXTENSION);
     name2 = name.split("-");
     name.remove(name2.at(0) + "-");
