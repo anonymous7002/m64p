@@ -11,7 +11,9 @@ public:
 private slots:
     void handleResetButton();
 private:
+    QString RSPName;
     QString AudioName;
+    QString VideoName;
 };
 
 #endif // PLUGINDIALOG_H
