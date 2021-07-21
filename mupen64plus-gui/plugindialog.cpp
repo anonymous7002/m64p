@@ -176,7 +176,8 @@ PluginDialog::PluginDialog(QWidget *parent)
     QWidget *rspSettings = new QWidget;
     rspLayout = new QGridLayout;
     rspSettings->setLayout(rspLayout);
-    QString name->setText(w->getSettings()->value("rspPlugin").toString());
+    QString name;
+	name->setText(w->getSettings()->value("rspPlugin").toString());
     name.remove(OSAL_DLL_EXTENSION);
     QStringList name2 = name.split("-");
     name.remove(name2.at(0) + "-");
