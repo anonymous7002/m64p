@@ -46,7 +46,7 @@ SOURCES += main.cpp \
     keypressfilter.cpp \
     netplay/createroom.cpp \
     netplay/joinroom.cpp \
-    netplay/waitroom.cpp
+    netplay/waitroom.cpp \
 
 macx {
 DEFINES += SINGLE_THREAD
