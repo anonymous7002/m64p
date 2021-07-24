@@ -40,13 +40,13 @@ SOURCES += main.cpp \
     settingclasses.cpp \
     cheatdialog.cpp \
     interface/core_commands.cpp \
-    interface/cheat.cpp
+    interface/cheat.cpp \
     interface/sdl_key_converter.c \
     logviewer.cpp \
     keypressfilter.cpp \
     netplay/createroom.cpp \
     netplay/joinroom.cpp \
-    netplay/waitroom.cpp \
+    netplay/waitroom.cpp
 
 macx {
 DEFINES += SINGLE_THREAD
