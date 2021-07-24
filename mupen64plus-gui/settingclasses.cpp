@@ -1,4 +1,5 @@
 #include "settingclasses.h"
+#include "cheat.h"
 #include "common.h"
 #include "interface/core_commands.h"
 #include <SDL.h>
