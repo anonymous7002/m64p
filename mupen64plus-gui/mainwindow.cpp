@@ -9,6 +9,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "common.h"
+#include "cheatdialog.h"
 #include "vidext.h"
 #include "netplay/createroom.h"
 #include "netplay/joinroom.h"
@@ -944,6 +945,12 @@ void MainWindow::on_actionLoad_State_From_triggered()
     if (!filename.isNull()) {
         (*CoreDoCommand)(M64CMD_STATE_LOAD, 1, filename.toUtf8().data());
     }
+}
+
+void MainWindow::on_actionCheats_triggered()
+{
+    CheatDialog *cheats = new CheatDialog(this);
+    cheats->show();
 }
 
 void MainWindow::on_actionInput_Configuration_triggered()

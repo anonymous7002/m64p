@@ -37,3 +37,36 @@ CustomCheckBox::CustomCheckBox(QWidget *parent)
         (*ConfigSaveFile)();
     });
 }
+
+CheatCheckBox::CheatCheckBox(QWidget *parent)
+    : QCheckBox(parent)
+{
+    m_Checked = false;
+    connect(this, &QAbstractButton::clicked, [=](bool checked){
+        sCheatInfo *pCheat;
+        pCheat = CheatFindCode(m_Number);
+        if (checked && !m_Checked) {
+            if (pCheat == NULL)
+               DebugMessage(M64MSG_WARNING, "invalid cheat code number %i", m_Number);
+            else
+            {
+                if (pCheat->VariableLine != -1 && pCheat->Count > pCheat->VariableLine && m_Option < pCheat->Codes[pCheat->VariableLine].var_count)
+                    pCheat->Codes[pCheat->VariableLine].var_to_use = m_Option;
+                CheatActivate(pCheat);
+                pCheat->active = true;
+            }
+            m_Checked = true;
+        }
+        else {
+            (*CoreCheatEnabled)(pCheat->Name, 0);
+            pCheat->active = false;
+            if (m_ButtonGroup != nullptr)
+                m_ButtonGroup->setChecked(true);
+        }
+    });
+    connect(this, &QCheckBox::stateChanged, [=](int state){
+        int value = state == Qt::Checked ? 1 : 0;
+        if (!value)
+            m_Checked = false;
+    });
+}

@@ -23,4 +23,7 @@ extern ptr_ConfigDeleteSection         ConfigDeleteSection;
 extern ptr_ConfigOpenSection           ConfigOpenSection;
 extern ptr_ConfigListParameters        ConfigListParameters;
 extern ptr_ConfigGetSharedDataFilepath ConfigGetSharedDataFilepath;
+
+extern ptr_CoreAddCheat                CoreAddCheat;
+extern ptr_CoreCheatEnabled            CoreCheatEnabled;
 #endif
