@@ -1,6 +1,6 @@
 # Sneed64
 
-Sneed64 is a fork of m64p by loganmc10, aiming to provide a pleasant experience while otherwise being up-to-date with m64p's original codebase, with minor improvements being added as (s)needed by contributors and volunteers like you at large.
+Sneed64 is a fork of loganmc10's m64p, aiming to provide a pleasant experience while otherwise being up-to-date with m64p's original codebase, with minor improvements being added as (s)needed by contributors and volunteers like you at large.
 
 **Downloads found here: https://github.com/anonymous7002/sneed64/releases**
 ___

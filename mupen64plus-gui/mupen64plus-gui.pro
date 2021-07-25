@@ -88,6 +88,8 @@ HEADERS  += mainwindow.h \
     oglwindow.h \
     settingclasses.h \
     osal/osal_dynamiclib.h \
+    cheatdialog.h \
+    interface/cheat.h \
     interface/sdl_key_converter.h \
     logviewer.h \
     keypressfilter.h \
