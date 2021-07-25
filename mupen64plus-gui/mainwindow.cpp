@@ -1097,6 +1097,9 @@ void MainWindow::loadCoreLib()
     ConfigListParameters =        (ptr_ConfigListParameters) osal_dynlib_getproc(coreLib, "ConfigListParameters");
     ConfigGetSharedDataFilepath = (ptr_ConfigGetSharedDataFilepath) osal_dynlib_getproc(coreLib, "ConfigGetSharedDataFilepath");
 
+    CoreAddCheat                = (ptr_CoreAddCheat) osal_dynlib_getproc(coreLib, "CoreAddCheat");
+    CoreCheatEnabled            = (ptr_CoreCheatEnabled) osal_dynlib_getproc(coreLib, "CoreCheatEnabled");
+
     QString qtConfigDir = settings->value("configDirPath").toString();
     qtConfigDir.replace("$APP_PATH$", QCoreApplication::applicationDirPath());
     qtConfigDir.replace("$CONFIG_PATH$", ConfigGetUserConfigPath());
