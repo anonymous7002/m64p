@@ -1,8 +1,9 @@
-# Sneed64
+# Sneed64 (outdated)
+Due to this projects age and the outdated situation as of 2024, end-users are strongly adviced to go find different options/solutions playing Nintendo 64 games.
 
-Sneed64 is a fork of loganmc10's m64p, aiming to provide a pleasant experience while otherwise being up-to-date with m64p's original codebase, with minor improvements being added as (s)needed by contributors and volunteers like you at large.
+Sneed64 was a fork of loganmc10's m64p, aimed to provide a pleasant experience while otherwise being up-to-date with m64p's original codebase, with minor improvements being added as (s)needed by contributors and volunteers like you at large.
 
-**Downloads found here: https://github.com/anonymous7002/sneed64/releases**
+**Downloads found here: https://github.com/lordlouckster/sneed64/releases**
 ___
 
 Linux Dependencies (Ubuntu 20.04)
@@ -20,7 +21,7 @@ sudo dnf install minizip-compat mesa-libGLU hidapi p7zip qt5-qtwebsockets
 ___
 Building:
 ```
-git clone https://github.com/anonymous7002/sneed64.git
+git clone https://github.com/lordlouckster/sneed64.git
 cd m64p
 ./build.sh
 ```
